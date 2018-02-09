@@ -35,6 +35,7 @@
 
   let firstPlayer = '';
 
+  //Listen for assigment of the player type.
   socket.on('assignment', (data) => {
     firstPlayer = data;
 
@@ -45,13 +46,20 @@
     }
   });
 
+  //Listen for restart of the game.
   socket.on('restarted', () => {
     init();
   });
 
-  socket.on('Tied', ()=>{
+  //Listen for the event of game Tied.
+  socket.on('Tied', () => {
     gameTied();
   });
+
+  //return document.querySelector() object.
+  function $(value) {
+    return document.querySelector(value);
+  }
 
   function init() {
 
@@ -61,7 +69,7 @@
     for (let i = 0; i < cell.length; i++) {
       cell[i].innerHTML = '';
       cell[i].style.background = '#fff';
-      document.querySelector(".endgame").style.display = 'none';
+      $(".endgame").style.display = 'none';
       cell[i].addEventListener('click', turnclick);//Add EventListener to Each click event in the column.
     }
   }
@@ -70,8 +78,8 @@
     if (typeof board[e.target.id] === 'number' && chance === true)
       turn(e.target.id, firstPlayer);
 
-    if(checkTie() === true){
-      socket.emit('Tied',{});
+    if (checkTie() === true) {
+      socket.emit('Tied', {});
     }
   }
 
@@ -129,12 +137,13 @@
 
   //Render Final DOM.
   function declareMessage(msg) {
-    let text = document.querySelector('.text');
-    document.querySelector(".endgame").style.display = 'block';
+    let text = $('.text');
+    $(".endgame").style.display = 'block';
     text.style.display = 'block';
     text.innerHTML = msg;
   }
 
+  //Return true if there is no blank spot left on board.
   function isEmpty() {
     let boardLength = emptySquares();
     if (boardLength === 0) {
@@ -144,25 +153,28 @@
     }
   }
 
+  //return no of blank spots left on the board.
   function emptySquares() {
     return board.filter(ele => typeof ele === 'number');
   }
 
+  //Check if game is Tied.
   function checkTie() {
-    console.log(emptySquares().length + 'asd');
     if (emptySquares().length <= 0) {
       return true;
     }
     return false;
   }
 
-  function gameTied(){
+  //Do something if game is Tied.
+  function gameTied() {
     for (let i = 0; i < cell.length; i++) {
       cell[i].style.background = 'green';
     }
     declareMessage("Game Tied");
   }
 
+  //Main Function that listens for the second player.
   function SecondPlayerSpot() {
     socket.on('turn', (data) => {
       render(data.id, data.player);
@@ -171,6 +183,11 @@
       }
     });
   }
+
+  //Keep Track of your turn.
+  setInterval(() => {
+    $(".turn").innerHTML = chance;
+  }, 2000);
 
   //Call Initial Method.
   init();

@@ -67,3 +67,11 @@ table tr:last-child td{
   color:#111;
   font-size:2em;
 }
+
+p{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.turn{
+  font-weight: bold;
+}
